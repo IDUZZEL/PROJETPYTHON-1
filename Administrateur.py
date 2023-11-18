@@ -1,5 +1,5 @@
 import Livre
-import Etudiant
+from Etudiant import Etudiant
 from prettytable import PrettyTable
 class Administrateur:
     def __init__(self ,id, nom, prenom, email, login, mdp):
