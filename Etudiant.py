@@ -1,11 +1,17 @@
-class Etudiant:
-	def __init__(self,id, nom, prenom, email, login ,password,suspended=False):
-		self.id = id
-		self.nom = nom
-		self.prenom = prenom
-		self.email = email
-		self.login = login
-		self.password = password
-		self.suspended = suspended
-	def __str__(self):
-		return f"{self.id},{self.nom},{self.prenom},{self.email},{self.login},{self.password},{self.suspended} \n"
+def EtudiantLogin(Login, Pass):
+    with open("etudiants.txt", "r") as file:
+        for line in file.readlines():
+            etudiant = line.strip().split(',')
+            if Login == etudiant[4] and Pass == etudiant[5]:
+                return True, etudiant[0]  # Returning True and the ID if login is successful
+    return False, None  # Returning False and None if login fails
+
+def EtudiantMain():
+    loggedIn = False
+    student_id = None
+    while not loggedIn:
+        Login = input("Entrez votre login : ")
+        Pass = input("Entrez votre mot de passe : ")
+        loggedIn, student_id = EtudiantLogin(Login, Pass)
+        if loggedIn:
+            print(f"Login successful! Student ID: {student_id}")
