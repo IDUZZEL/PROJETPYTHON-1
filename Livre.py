@@ -1,39 +1,55 @@
-from prettytable import PrettyTable  ##(pip install prettytable) la commande pour installer PrettyTable pour afficher les livres dans un tableau
+from datetime import datetime, timedelta
+from prettytable import PrettyTable
+
+def afficheLivre():
+	file = open("livres.txt","r")
+	table = PrettyTable(["id","Titre","Auteur","Éditeur","ISBN","Nombre d'exemplaires","Année"])
+	for line in file.readlines():
+		livre=line.strip().split(',')
+		table.add_row([livre[0], livre[1], livre[2],livre[3], livre[4], livre[5],livre[6]])
+	print(table)
+	file.close()
+     
+def livreDisponible(id_livre):
+    # Vérifiez si le livre est disponible en vérifiant s'il a déjà été emprunté
+    with open("emprunts.txt", "r") as fichier:
+        for ligne in fichier:
+            enregistrement = ligne.strip().split(',')
+            if enregistrement[1] == id_livre:
+                # Le livre a déjà été emprunté
+                return False
+    # Le livre n'a pas été emprunté, il est disponible
+    return True
+def peutEmprunterPlusDeLivres(id_etudiant):
+    # Vérifiez si l'étudiant a déjà emprunté trois livres
+    livres_empruntes = 0
+    with open("emprunts.txt", "r") as fichier:
+        for ligne in fichier:
+            enregistrement = ligne.strip().split(',')
+            if enregistrement[0] == id_etudiant:
+                livres_empruntes += 1
+    return livres_empruntes < 3
+
+def empruntLivre(id_etudiant):
+    creerfichier=open("emprunts.txt", "a+")
+    creerfichier.close()
+    id_livre = input("Entrez l'identifiant du livre : ")
+    date_emprunt = datetime.now().strftime("%Y-%m-%d")
+
+    # Vérifiez si l'étudiant a déjà emprunté trois livres
+    if not peutEmprunterPlusDeLivres(id_etudiant):
+        print("Vous avez atteint la limite maximale d'emprunts (3 livres).")
+        return
+
+    # Vérifiez si le livre est disponible pour l'emprunt
+    if livreDisponible(id_livre):
+        # Ajoutez l'enregistrement d'emprunt au fichier
+        enregistrement_emprunt = f"{id_etudiant},{id_livre},{date_emprunt}\n"
+        with open("emprunts.txt", "a") as fichier:
+            fichier.write(enregistrement_emprunt)
+        print("Livre emprunté avec succès !")
+    else:
+        print("Le livre n'est pas disponible pour l'emprunt.")
 
 
-class Livre:
-    def __init__(self, id, auteur, titre, editeur, ISBN, nbr_exemplaire): #constructeur
-        self.id = int(id)
-        self.auteur = auteur
-        self.titre = titre
-        self.editeur = editeur
-        self.ISBN = ISBN
-        self.nbr_exemplaire = int(nbr_exemplaire)
-
-    @property
-    def __str__(self):  # affichage du livre string method
-        return f' {self.id} + {self.auteur} + {self.titre}+{self.editeur} + {self.ISBN} + {self.nbr_exemplaire}'
-        #c = Livre(2,'adam','hh','gh',123, 123)
-        #print(c.__str__)
-        #affichage -> 2 + adam+hh+....
-
-    @classmethod
-    def ajouter_un_livre(cls): #demander a l'utilisateur de saisir les informations du livre
-        id = int(input('id :'))
-        auteur = input('auteur : ')
-        titre = input('titre :')
-        editeur = input('editeur :')
-        ISBN = input('ISBN :')
-        nbr_exemplaire = int(input('nbr_exemplaire :'))
-        return cls(id, auteur, titre,editeur, ISBN, nbr_exemplaire)
-
-    def affichage_livres(self):
-        table = PrettyTable(['id', 'auteur', 'titre', 'editeur', 'ISBN', 'nbr_exemplaire']) #table header
-        table.add_row([self.id, self.auteur, self.titre,self.editeur, self.ISBN, self.nbr_exemplaire]) #ajouter les informations du livre
-        print(table)
-
-
-livre = Livre.ajouter_un_livre()
-
-livre.affichage_livres()
 
