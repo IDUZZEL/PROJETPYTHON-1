@@ -23,6 +23,6 @@ def EtudiantMain():
         Pass = input("Entrez votre mot de passe : ")
         loggedIn, student_id, student_name= EtudiantLogin(Login, Pass)
         if loggedIn:
-            print(f"Login successful! \n Bonjour Mr/Mme {student_name} \n vous pouvez ecrire id du livre que vous souhaite empriente")
+            print(f"Login successful! \n Bonjour Mr/Mme {student_name} \n Pouvez-vous écrire l'ID du livre que vous souhaitez emprunter ?")
             Livre.afficheLivre()
             Livre.empruntLivre(student_id)
