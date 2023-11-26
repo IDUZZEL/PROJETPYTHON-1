@@ -1,8 +1,9 @@
 from prettytable import PrettyTable
+import Livre
 Menu ='''
 1_ajoute un etudiant 
 2_afficher la liste des etudiant avec leur infos
-3_suspendre and etudiant
+3_suspendre un compte d'etudiant
 4_active un compte d'etudiant
 5_ajoute un livre 
 6_supprime un livre
@@ -128,9 +129,11 @@ def AdminMain():
                       afficheEtudiant()
                  elif choix =='5':
                     ajouterLivre()
+                    Livre.afficheLivre()
                  elif choix =='6':
                     id_livre=input("write the id of the book")
                     supprimerLivre(id_livre)
+                    Livre.afficheLivre()
                  elif choix =='0':
                      exit=1
                  else:
