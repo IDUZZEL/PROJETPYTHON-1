@@ -3,11 +3,14 @@ Menu ='''
 1_ajoute un etudiant 
 2_afficher la liste des etudiant avec leur infos
 3_suspendre and etudiant
-4_ active un compte d'etudiant
+4_active un compte d'etudiant
+5_ajoute un livre 
+6_supprime un livre
+7_affiche la liste des etudiant qui depasse leur periode
 0_exit
 '''
-def getNextID():
-    with open("etudiants.txt", "r") as file:
+def getNextID(file):
+    with open(file, "r") as file:
         lines = file.readlines()
         if lines:
             last_line = lines[-1].strip().split(',')
@@ -17,8 +20,7 @@ def getNextID():
             return 1
 def ajoutEtudiant():
     with open("etudiants.txt", "a+") as file:
-        new_id = getNextID()
-        id_input = str(new_id)
+        id_input = str(getNextID("etudiants.txt"))
         nom_input = input("nom: ")
         prenom_input = input("prenom: ")
         email_input = input("email: ")
@@ -36,6 +38,7 @@ def afficheEtudiant():
 		table.add_row([etudiant[0], etudiant[1], etudiant[2],etudiant[3], etudiant[4], etudiant[5],etudiant[6]])
 	print(table)
 	file.close()
+
 def AdminLogin(Login, Pass):
     with open("admins.txt", "r") as file:
         for line in file.readlines():
@@ -43,10 +46,11 @@ def AdminLogin(Login, Pass):
             if Login == admin[0] and Pass == admin[1]:
                 return True
     return False
+
+#fonction pour desactive un compte
 def suspendAccount(student_id):
     with open("etudiants.txt", "r") as file:
         lines = file.readlines()
-
     with open("etudiants.txt", "w") as file:
         for line in lines:
             student_info = line.strip().split(',')
@@ -58,7 +62,6 @@ def suspendAccount(student_id):
 def ativateAccount(student_id):
     with open("etudiants.txt", "r") as file:
         lines = file.readlines()
-
     with open("etudiants.txt", "w") as file:
         for line in lines:
             student_info = line.strip().split(',')
@@ -66,8 +69,40 @@ def ativateAccount(student_id):
                 student_info[6] = 'False'  
                 line = ','.join(student_info) + '\n'
             file.write(line)
+    return True
 
-    return True 
+
+def ajouterLivre():
+    with open("livres.txt", "a+") as file:
+        id_input = getNextID("livres.txt")
+        titre_input = input("Titre: ")
+        auteur_input = input("Auteur: ")
+        editeur_input = input("Éditeur: ")
+        isbn_input = input("ISBN: ")
+        nb_exemplaires_input = input("Nombre d'exemplaires: ")
+        annee_input = input("Année: ")
+        livre = f"{id_input},{titre_input},{auteur_input},{editeur_input},{isbn_input},{nb_exemplaires_input},{annee_input}\n"
+        file.write(livre)
+        print("Livre ajouté avec succès!")
+
+def supprimerLivre(id_livre):
+    deleted=False
+    with open("livres.txt", "r") as file:
+        lines = file.readlines()
+    with open("temp.txt", "w") as file2:
+        for line in lines:
+            livre_info = line.strip().split(',')
+            if livre_info[0] == id_livre:
+                deleted=True
+            else:
+                file2.write(line)
+        if deleted:
+            print(f"Livre avec l'ID {id_livre} supprimé avec succès!")
+        else:
+            print(f"Aucun livre avec l'ID {id_livre} n'a été trouvé.")
+    file.close()
+    file2.close()
+
 def AdminMain():
     loggedIn = False
     while not loggedIn:
@@ -91,9 +126,15 @@ def AdminMain():
                       student_id=input("saisie Le ID d'etudiant: ")
                       ativateAccount(student_id)
                       afficheEtudiant()
+                 elif choix =='5':
+                    ajouterLivre()
+                 elif choix =='6':
+                    id_livre=input("write the id of the book")
+                    supprimerLivre(id_livre)
                  elif choix =='0':
                      exit=1
                  else:
                       print("Choix introuvable ...")
         else:
             print("Incorrect login or password. Please try again.")
+
